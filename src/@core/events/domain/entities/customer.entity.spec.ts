@@ -56,4 +56,21 @@ describe('Customer Entity', () => {
     });
     expect(json.id.value).toBe(uuid);
   });
+
+  it('should return true for equals when Customers have same id', () => {
+    const cpf1 = new Cpf('935.411.347-80');
+    const cpf2 = new Cpf('935.411.347-80');
+    const id = '123e4567-e89b-12d3-a456-426614174000';
+    const customer1 = new Customer({ id, name: 'João', cpf: cpf1 });
+    const customer2 = new Customer({ id, name: 'Maria', cpf: cpf2 });
+    expect(customer1.equals(customer2)).toBe(true);
+  });
+
+  it('should return false for equals when Customers have different ids', () => {
+    const cpf1 = new Cpf('935.411.347-80');
+    const cpf2 = new Cpf('935.411.347-80');
+    const customer1 = new Customer({ name: 'João', cpf: cpf1 });
+    const customer2 = new Customer({ name: 'Maria', cpf: cpf2 });
+    expect(customer1.equals(customer2)).toBe(false);
+  });
 });
