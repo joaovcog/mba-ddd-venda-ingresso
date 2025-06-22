@@ -1,19 +1,34 @@
 import Cpf from '../../../common/domain/value-objects/cpf.vo';
 import { Customer } from './customer.entity';
+import { CustomerId } from './customer.entity';
+import Uuid from '../../../common/domain/value-objects/uuid.vo';
 
 describe('Customer Entity', () => {
-  it('should create Customer with standard id 0', () => {
+  it('should create Customer with auto generated id', () => {
     const cpf = new Cpf('935.411.347-80');
     const customer = new Customer({ name: 'João', cpf });
-    expect(customer.id).toBe(0);
+    expect(customer.id).toBeInstanceOf(Uuid);
     expect(customer.name).toBe('João');
     expect(customer.cpf.value).toBe('93541134780');
+    expect(customer.id.value).toMatch(
+      /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
+    );
   });
 
   it('should create Customer with defined id', () => {
     const cpf = new Cpf('935.411.347-80');
-    const customer = new Customer({ id: 5, name: 'Maria', cpf });
-    expect(customer.id).toBe(5);
+    const customerId = new CustomerId('123e4567-e89b-12d3-a456-426614174000');
+    const customer = new Customer({ id: customerId, name: 'Maria', cpf });
+    expect(customer.id.value).toBe('123e4567-e89b-12d3-a456-426614174000');
+    expect(customer.name).toBe('Maria');
+    expect(customer.cpf.value).toBe('93541134780');
+  });
+
+  it('should create Customer with defined uuid as string', () => {
+    const cpf = new Cpf('935.411.347-80');
+    const customerId = '123e4567-e89b-12d3-a456-426614174000';
+    const customer = new Customer({ id: customerId, name: 'Maria', cpf });
+    expect(customer.id.value).toBe(customerId);
     expect(customer.name).toBe('Maria');
     expect(customer.cpf.value).toBe('93541134780');
   });
@@ -23,16 +38,22 @@ describe('Customer Entity', () => {
     expect(customer).toBeInstanceOf(Customer);
     expect(customer.name).toBe('Carlos');
     expect(customer.cpf.value).toBe('93541134780');
+    expect(customer.id).toBeInstanceOf(Uuid);
+    expect(customer.id.value).toMatch(
+      /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
+    );
   });
 
   it('should serialize to JSON correctly', () => {
     const cpf = new Cpf('935.411.347-80');
-    const customer = new Customer({ id: 10, name: 'Ana', cpf });
+    const uuid = '123e4567-e89b-12d3-a456-426614174000';
+    const customer = new Customer({ id: uuid, name: 'Ana', cpf });
     const json = customer.toJSON();
     expect(json).toEqual({
-      id: 10,
+      id: customer.id,
       cpf: '93541134780',
       name: 'Ana',
     });
+    expect(json.id.value).toBe(uuid);
   });
 });
