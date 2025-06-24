@@ -1,6 +1,7 @@
 import { AggregateRoot } from '../../../common/domain/aggregate-root';
 import { PartnerId } from './partner.entity';
 import Uuid from '../../../common/domain/value-objects/uuid.vo';
+import { EventSection } from './event-section';
 
 export class EventId extends Uuid {}
 
@@ -20,6 +21,7 @@ export type EventConstructorProps = {
   total_spots: number;
   total_spots_reserved: number;
   partner_id: PartnerId | string;
+  sections?: Set<EventSection>;
 };
 
 export class Event extends AggregateRoot {
@@ -31,6 +33,7 @@ export class Event extends AggregateRoot {
   total_spots: number;
   total_spots_reserved: number;
   partner_id: PartnerId;
+  sections: Set<EventSection> = new Set<EventSection>();
 
   constructor(props: EventConstructorProps) {
     super();
@@ -49,6 +52,7 @@ export class Event extends AggregateRoot {
       props.partner_id instanceof PartnerId
         ? props.partner_id
         : new PartnerId(props.partner_id);
+    this.sections = props.sections ?? new Set<EventSection>();
   }
 
   static create(command: CreateEventCommand) {
