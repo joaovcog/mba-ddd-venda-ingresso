@@ -157,47 +157,45 @@ describe('Event Entity', () => {
     const partnerId = new PartnerId('111e4567-e89b-12d3-a456-426614174000');
     const date = new Date('2025-07-01T20:00:00Z');
     // Create spots for section 1
-    const spots1 = new Set([
-      new EventSpot({
-        id: new EventSpotId('111e4567-e89b-12d3-a456-426614174001'),
-        location: 'A1',
-        is_reserved: false,
-        is_published: false,
-      }),
-      new EventSpot({
-        id: new EventSpotId('111e4567-e89b-12d3-a456-426614174002'),
-        location: 'A2',
-        is_reserved: false,
-        is_published: false,
-      }),
-      new EventSpot({
-        id: new EventSpotId('111e4567-e89b-12d3-a456-426614174003'),
-        location: 'A3',
-        is_reserved: false,
-        is_published: false,
-      }),
-    ]);
+    const spot1_1 = new EventSpot({
+      id: new EventSpotId('111e4567-e89b-12d3-a456-426614174001'),
+      location: 'A1',
+      is_reserved: false,
+      is_published: false,
+    });
+    const spot1_2 = new EventSpot({
+      id: new EventSpotId('111e4567-e89b-12d3-a456-426614174002'),
+      location: 'A2',
+      is_reserved: false,
+      is_published: false,
+    });
+    const spot1_3 = new EventSpot({
+      id: new EventSpotId('111e4567-e89b-12d3-a456-426614174003'),
+      location: 'A3',
+      is_reserved: false,
+      is_published: false,
+    });
+    const spots1 = new Set([spot1_1, spot1_2, spot1_3]);
     // Create spots for section 2
-    const spots2 = new Set([
-      new EventSpot({
-        id: new EventSpotId('111e4567-e89b-12d3-a456-426614174004'),
-        location: 'B1',
-        is_reserved: false,
-        is_published: false,
-      }),
-      new EventSpot({
-        id: new EventSpotId('111e4567-e89b-12d3-a456-426614174005'),
-        location: 'B2',
-        is_reserved: false,
-        is_published: false,
-      }),
-      new EventSpot({
-        id: new EventSpotId('111e4567-e89b-12d3-a456-426614174006'),
-        location: 'B3',
-        is_reserved: false,
-        is_published: false,
-      }),
-    ]);
+    const spot2_1 = new EventSpot({
+      id: new EventSpotId('111e4567-e89b-12d3-a456-426614174004'),
+      location: 'B1',
+      is_reserved: false,
+      is_published: false,
+    });
+    const spot2_2 = new EventSpot({
+      id: new EventSpotId('111e4567-e89b-12d3-a456-426614174005'),
+      location: 'B2',
+      is_reserved: false,
+      is_published: false,
+    });
+    const spot2_3 = new EventSpot({
+      id: new EventSpotId('111e4567-e89b-12d3-a456-426614174006'),
+      location: 'B3',
+      is_reserved: false,
+      is_published: false,
+    });
+    const spots2 = new Set([spot2_1, spot2_2, spot2_3]);
     // Create sections
     const section1 = new EventSection({
       name: 'VIP',
@@ -228,12 +226,56 @@ describe('Event Entity', () => {
       partner_id: partnerId,
       sections,
     });
-    console.log(event);
     expect(event.sections.size).toBe(2);
     const [sec1, sec2] = [...event.sections];
     expect(sec1.spots.size).toBe(3);
     expect(sec2.spots.size).toBe(3);
+    expect([...sec1.spots]).toEqual([spot1_1, spot1_2, spot1_3]);
+    expect([...sec2.spots]).toEqual([spot2_1, spot2_2, spot2_3]);
     expect([...sec1.spots].map((s) => s.location)).toEqual(['A1', 'A2', 'A3']);
     expect([...sec2.spots].map((s) => s.location)).toEqual(['B1', 'B2', 'B3']);
+  });
+
+  it('should add a section using addSection and update total_spots', () => {
+    const partnerId = new PartnerId('111e4567-e89b-12d3-a456-426614174000');
+    const date = new Date('2025-07-01T20:00:00Z');
+    const event = Event.create({
+      name: 'Evento com Seções',
+      date,
+      partner_id: partnerId,
+    });
+    expect(event.sections.size).toBe(0);
+    expect(event.total_spots).toBe(0);
+
+    event.addSection({
+      name: 'VIP',
+      description: 'Frente',
+      total_spots: 3,
+      price: 500,
+    });
+    expect(event.sections.size).toBe(1);
+    expect(event.total_spots).toBe(3);
+    const section = [...event.sections][0];
+    expect(section.name).toBe('VIP');
+    expect(section.description).toBe('Frente');
+    expect(section.total_spots).toBe(3);
+    expect(section.price).toBe(500);
+    expect(section.is_published).toBe(false);
+    expect(section.total_spots_reserved).toBe(0);
+    expect(section.spots.size).toBe(3);
+
+    event.addSection({
+      name: 'Pista',
+      total_spots: 2,
+      price: 100,
+    });
+    expect(event.sections.size).toBe(2);
+    expect(event.total_spots).toBe(5);
+    const names = [...event.sections].map((s) => s.name);
+    expect(names).toContain('VIP');
+    expect(names).toContain('Pista');
+    const pistaSection = [...event.sections].find((s) => s.name === 'Pista');
+    expect(pistaSection).toBeDefined();
+    expect(pistaSection!.spots.size).toBe(2);
   });
 });
