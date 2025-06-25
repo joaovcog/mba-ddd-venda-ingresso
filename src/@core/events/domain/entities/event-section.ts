@@ -64,6 +64,24 @@ export class EventSection extends Entity {
     }
   }
 
+  publish() {
+    this.is_published = true;
+  }
+
+  unpublish() {
+    this.is_published = false;
+  }
+
+  publishAll() {
+    this.publish();
+    this.spots.forEach((spot) => spot.publish());
+  }
+
+  unpublishAll() {
+    this.unpublish();
+    this.spots.forEach((spot) => spot.unpublish());
+  }
+
   toJSON() {
     return {
       id: this.id.value,

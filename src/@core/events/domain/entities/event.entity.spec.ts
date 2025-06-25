@@ -278,4 +278,54 @@ describe('Event Entity', () => {
     expect(pistaSection).toBeDefined();
     expect(pistaSection!.spots.size).toBe(2);
   });
+
+  it('should publish and unpublish the event', () => {
+    const partnerId = new PartnerId('111e4567-e89b-12d3-a456-426614174000');
+    const date = new Date('2025-07-01T20:00:00Z');
+    const event = Event.create({
+      name: 'Evento',
+      date,
+      partner_id: partnerId,
+    });
+    expect(event.is_published).toBe(false);
+    event.publish();
+    expect(event.is_published).toBe(true);
+    event.unpublish();
+    expect(event.is_published).toBe(false);
+  });
+
+  it('should publish all sections when publishAll is called', () => {
+    const partnerId = new PartnerId('111e4567-e89b-12d3-a456-426614174000');
+    const date = new Date('2025-07-01T20:00:00Z');
+    const event = Event.create({
+      name: 'Evento',
+      date,
+      partner_id: partnerId,
+    });
+    event.addSection({ name: 'VIP', total_spots: 2, price: 100 });
+    event.addSection({ name: 'Pista', total_spots: 2, price: 50 });
+    for (const section of event.sections) {
+      expect(section.is_published).toBe(false);
+      expect(section.spots.size).toBe(2);
+      for (const spot of section.spots) {
+        expect(spot.is_published).toBe(false);
+      }
+    }
+    event.publishAll();
+    expect(event.is_published).toBe(true);
+    for (const section of event.sections) {
+      expect(section.is_published).toBe(true);
+      for (const spot of section.spots) {
+        expect(spot.is_published).toBe(true);
+      }
+    }
+    event.unpublishAll();
+    expect(event.is_published).toBe(false);
+    for (const section of event.sections) {
+      expect(section.is_published).toBe(false);
+      for (const spot of section.spots) {
+        expect(spot.is_published).toBe(false);
+      }
+    }
+  });
 });
