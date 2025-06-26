@@ -20,6 +20,7 @@ describe('Partner MikroORM integration', () => {
       host: getEnvOrDefault('POSTGRES_HOST', 'localhost'),
       port: +getEnvOrDefault('POSTGRES_PORT', '5432'),
       driver: PostgreSqlDriver,
+      forceEntityConstructor: true,
     });
     // await orm.getSchemaGenerator().ensureDatabase();
     // await orm.getSchemaGenerator().dropSchema();
