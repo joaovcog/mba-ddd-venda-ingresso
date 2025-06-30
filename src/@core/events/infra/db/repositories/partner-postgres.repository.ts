@@ -1,6 +1,6 @@
 import { EntityManager } from '@mikro-orm/postgresql';
 import { Partner, PartnerId } from '../../../domain/entities/partner.entity';
-import { IPartnerRepository } from 'src/@core/events/domain/repositories/partner.repository.interface';
+import { IPartnerRepository } from 'src/@core/events/domain/repositories/partner-repository.interface';
 
 export class PartnerPostgresRepository implements IPartnerRepository {
   constructor(private entityManager: EntityManager) {}

@@ -67,7 +67,10 @@ describe('PartnerPostgresRepository (integration)', () => {
     const foundPartner1 = await repository.findById(partner1.id);
     const partner3 = new Partner({ name: 'Partner 3' });
     repository.add(partner3);
-    repository.delete(foundPartner1!);
+    if (foundPartner1) {
+      const managedPartner1 = em.merge(Partner, foundPartner1);
+      repository.delete(managedPartner1);
+    }
     await em.flush();
     em.clear();
 
