@@ -6,7 +6,7 @@ import {
   AnyCollection,
   CustomCollectionFactory,
   ICollection,
-} from 'src/@core/common/domain/custom-collection';
+} from '../../../common/domain/custom-collection';
 
 export class EventId extends Uuid {}
 

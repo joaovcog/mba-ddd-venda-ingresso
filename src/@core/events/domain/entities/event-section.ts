@@ -2,7 +2,7 @@ import {
   AnyCollection,
   CustomCollectionFactory,
   ICollection,
-} from 'src/@core/common/domain/custom-collection';
+} from '../../../common/domain/custom-collection';
 import { Entity } from '../../../common/domain/entity';
 import Uuid from '../../../common/domain/value-objects/uuid.vo';
 import { EventSpot } from './event-spot';
