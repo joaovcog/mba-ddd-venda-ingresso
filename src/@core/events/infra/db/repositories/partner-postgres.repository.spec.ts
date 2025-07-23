@@ -13,10 +13,10 @@ describe('PartnerPostgresRepository (integration)', () => {
   beforeAll(async () => {
     orm = await MikroORM.init<PostgreSqlDriver>({
       entities: [PartnerSchema],
-      dbName: process.env.POSTGRES_TEST_DB || 'test',
-      user: process.env.POSTGRES_USER || 'postgres',
-      password: process.env.POSTGRES_PASSWORD || 'postgres',
-      host: process.env.POSTGRES_HOST || 'localhost',
+      dbName: process.env.POSTGRES_TEST_DB,
+      user: process.env.POSTGRES_USER,
+      password: process.env.POSTGRES_PASSWORD,
+      host: process.env.POSTGRES_HOST,
       port: +(process.env.POSTGRES_PORT || 5432),
       driver: PostgreSqlDriver,
       forceEntityConstructor: true,
